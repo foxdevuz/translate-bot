@@ -36,23 +36,15 @@
                 $user = mysqli_fetch_assoc($db->selectWhere('users', [['fromid' => $fromid, 'cn' => '=']]));
 
                 if (removeBotUserName($text) == "/start") {
-                    $db->updateWhere('users', ['data' => 'register', 'step' => 1], ['fromid' => $fromid, 'cn' => '=']);
-                    $message = ($myUser) ? "<b>Assalomu alaykum, $full_name siz 1-martta botga start berdingiz </b>" : "<b>Assalomu alaykum, $full_name siz 2-martta botga start berdingiz</b>";
-                    $bot->sendChatAction('typing', $chat_id)->setInlineKeyBoard($inline_keyboard)->sendMessage($message);
+                    $message = "Hello there! We are optimizing our bot. Please try again later. Thank you! For updates check: @webfoxuz";
+                    $bot->sendMessage($message, $chat_id);
                     exit();
-                }
-
-                if ($user['data'] == 'register' && $user['step'] == '2') {
-                    if ($text) {
-                        $db->updateWhere('users', ['step' => 3, 'full_name' => $text], ['fromid' => $fromid, 'cn' => '=']);
-                        $bot->sendChatAction('typing', $fromid)->sendMessage("Bog'lanish uchun telefon raqamingizni yuboring:");
-                    }
                 }
             }
         } else {
             if (removeBotUserName($text) == "/start") {
                 $myUser = myUser(['fromid', 'name', 'user', 'chat_type', 'lang', 'del'], [$fromid, $full_name, $user, 'group', '', 0]);
-                $message = ($myUser) ? 'Assalomu alaykum, xush kelibsiz!' : 'Assalomu alaykum, qayata xush kelibsiz!';
+                $message = "Hello there! We are optimizing our bot. Please try again later. Thank you! For updates check: @webfoxuz";
                 $bot->sendChatAction('typing', $chat_id)->sendMessage($message);
                 exit();
             }
@@ -61,15 +53,6 @@
         if (channel($callback_from_id)) {
             $user = mysqli_fetch_assoc($db->selectWhere('users', [['fromid' => $callback_from_id, 'cn' => '=']]));
 
-            if ($data == 'res') {
-                $bot->sendChatAction('typing', $callback_from_id)->editMessageText("Assalomu alaykum, xush kelibsiz!", $mid);
-                exit();
-            }
-
-            if ($data == 'inline_key') {
-                $bot->sendChatAction('typing', $callback_from_id)->setInlineKeyBoard($inline_keyboard)->editMessageText("Edit bo'ldi", $mid);
-                exit();
-            }
         }
     }
 
