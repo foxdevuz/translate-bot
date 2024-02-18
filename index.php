@@ -1,7 +1,7 @@
 <?php
     require './Telegram/TelegramBot.php';
-    require './helpers/functions.php';
     require './db_config/db_config.php';
+    require './helpers/functions.php';
 
     use TelegramBot as Bot;
 
