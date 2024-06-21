@@ -2,8 +2,9 @@
 /** @var SergiX44\Nutgram\Nutgram $bot */
 
 use App\Telegram\Commands\StartCommand;
+use App\Telegram\Conversations\ChangeLanguage;
+use App\Telegram\Conversations\TranslateConversation;
 use App\Telegram\Conversations\UzbekToRussianTranslate;
-use SergiX44\Nutgram\Nutgram;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +17,5 @@ use SergiX44\Nutgram\Nutgram;
 */
 
 $bot->onCommand('start', StartCommand::class);
-$bot->onCallbackQueryData('uz-ru', UzbekToRussianTranslate::class);
+$bot->onCallbackQuery(TranslateConversation::class);
+$bot->onCallbackQueryData('change-lang', ChangeLanguage::class);

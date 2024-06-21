@@ -1,32 +1,30 @@
 <?php
 
-namespace App\Telegram\Commands;
+namespace App\Telegram\Conversations;
 
 use App\Models\User;
+use Psr\SimpleCache\InvalidArgumentException;
+use SergiX44\Nutgram\Conversations\Conversation;
 use SergiX44\Nutgram\Nutgram;
-use SergiX44\Nutgram\Handlers\Type\Command;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
-use function Laravel\Prompts\text;
 
-class StartCommand extends Command
+class ChangeLanguage extends Conversation
 {
-    protected string $command = 'command';
-
-    protected ?string $description = 'A lovely description.';
-
-    public function handle(Nutgram $bot): void
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function start(Nutgram $bot) : void
     {
-        // Write user to database if not exists
+        // set user's language to null
         $user = User::where('user_id', $bot->userId())->first();
-        if (!$user) {
-            User::create([
-                'name'=>$bot->user()->first_name,
-                'user_id'=>$bot->userId()
-            ]);
-        }
+        $user->update([
+            'language' => null
+        ]);
+        $user->save();
+        // let the user choose the language
         $bot->sendMessage(
-            text:"Salom botimizga xush kelibsiz! Tarjima qilish uchun tilni tanlang",
+            text:"Tarjima qilish uchun tilni tanlang",
             reply_markup: InlineKeyboardMarkup::make()
                 ->addRow(
                     InlineKeyboardButton::make(text: "🇺🇿 O'zbek — 🇷🇺 Rus", callback_data: "uz-ru"), InlineKeyboardButton::make(text: "🇷🇺 Rus — 🇺🇿 O'zbek", callback_data: "ru-uz")
@@ -47,5 +45,6 @@ class StartCommand extends Command
                     InlineKeyboardButton::make(text: "🚀 Avtomatik aniqlash — 🇷🇺 Ru", callback_data: 'auto-ru')
                 )
         );
+        $this->end();
     }
 }
