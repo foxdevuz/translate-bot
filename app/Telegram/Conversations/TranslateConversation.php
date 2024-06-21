@@ -4,15 +4,16 @@ namespace App\Telegram\Conversations;
 
 use App\Models\User;
 use App\Services\TranslationService;
+use App\Traits\InlineKeyboards;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\SimpleCache\InvalidArgumentException;
 use SergiX44\Nutgram\Conversations\Conversation;
 use SergiX44\Nutgram\Nutgram;
-use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
-use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardMarkup;
 
 class TranslateConversation extends Conversation
 {
+    use InlineKeyboards;
+
     /**
      * @param Nutgram $bot
      * @return void
@@ -33,11 +34,8 @@ class TranslateConversation extends Conversation
         );
 
         $bot->sendMessage(
-            text: "Tarjima qilish uchun matn yuboring!",
-            reply_markup: InlineKeyboardMarkup::make()
-                ->addRow(
-                    InlineKeyboardButton::make(text: "🔄 Tilni almashtirish", callback_data: 'change-lang')
-                )
+            text: "Tarjima qilish uchun matn yuboring.",
+            reply_markup: $this->changeLang()
         );
         $this->next('secondStep');
     }
@@ -61,18 +59,12 @@ class TranslateConversation extends Conversation
         if ($translation) {
             $bot->sendMessage(
                 text: "Tarjima qilingan matn:\n\n" . $translation,
-                reply_markup: InlineKeyboardMarkup::make()
-                        ->addRow(
-                            InlineKeyboardButton::make(text: "🔄 Tilni almashtirish", callback_data: 'change-lang')
-                        )
+                reply_markup: $this->changeLang()
             );
         } else {
             $bot->sendMessage(
                 text: "Tarjima qilinmadi!, Iltimos qaytadan urunib ko'ring!",
-                reply_markup: InlineKeyboardMarkup::make()
-                        ->addRow(
-                            InlineKeyboardButton::make(text: "🔄 Tilni almashtirish", callback_data: 'change-lang')
-                        )
+                reply_markup: $this->changeLang()
             );
         }
     }
